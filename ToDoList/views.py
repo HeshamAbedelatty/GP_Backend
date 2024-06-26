@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import ToDoTask, ToDoList
-from .serializers import ToDoTaskSerializer, ToDoListSerializer
+from .serializers import ToDoTaskSerializer, ToDoListSerializer, ToDoListDetailSerializer
 
 class ToDoListView(ListCreateAPIView):
     queryset = ToDoList.objects.all()
@@ -74,3 +74,23 @@ class ToDoTaskDetailView(RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         self.perform_destroy(instance)
         return Response({"message": "Schedule deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+# make view for listing todolist and its todotasks
+
+class ToDoListDetailsView(RetrieveUpdateDestroyAPIView):
+    queryset = ToDoList.objects.all()
+    serializer_class = ToDoListSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return ToDoList.objects.filter(user=self.request.user)
+    
+
+class ToDoListDetailsView(ListCreateAPIView):
+    queryset = ToDoList.objects.all()
+    serializer_class = ToDoListDetailSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return ToDoList.objects.filter(user=self.request.user)
+    
