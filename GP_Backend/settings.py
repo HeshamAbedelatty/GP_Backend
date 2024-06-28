@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'ToDoList',
     'schedule',
     'folders',
+    'groups',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
