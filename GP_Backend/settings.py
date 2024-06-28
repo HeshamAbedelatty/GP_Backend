@@ -88,6 +88,16 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'Sa3tenGd',
+#         'USER': 'postgres',
+#         'PASSWORD': 'hesham2002@#',
+#         'HOST': 'localhost',  # Or your database host
+#         'PORT': '5432',       # Or your database port
+#     }
+# }
 
 # REST_FRAMEWORK = {
 #     "DEFAULT_AUTHENTICATION_CLASSES": (

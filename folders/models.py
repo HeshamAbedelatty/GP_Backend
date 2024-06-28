@@ -24,4 +24,4 @@ class File(models.Model):
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE, related_name='files')
 
     def __str__(self):
-        return self.name
+        return self.media_path.name

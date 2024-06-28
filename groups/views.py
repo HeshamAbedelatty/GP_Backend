@@ -1,9 +1,12 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from groups.permissions import IsAdmin, IsNotAdmin, IsJoin, IsNotOwner, IsOwner, IsUnJoin
-from .models import Group, UserGroup
-from .serializers import GroupSerializer
+from groups.permissions import IsAdmin, IsNotAdmin, IsJoin, IsNotOwner, IsOwner, IsUnJoin, IsMaterialOwner
+from .models import Group, UserGroup, GroupMaterial
+from .serializers import GroupSerializer, UserGroupSerializer, GroupMaterialSerializer, GroupDetailSerializer
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class GroupListCreateAPIView(generics.ListCreateAPIView):
     queryset = Group.objects.all().order_by('-members')
@@ -113,3 +116,49 @@ class GroupSearchByTitleAPIView(generics.ListAPIView):
         if title:
             return Group.objects.filter(title__icontains=title)
         # return Group.objects.all()
+
+class GroupUsersListAPIView(generics.ListAPIView):
+    serializer_class = UserGroupSerializer
+    permission_classes = (IsAuthenticated, IsJoin)
+
+    def get_queryset(self):
+        group_id = self.kwargs['pk']
+        return UserGroup.objects.filter(group_id=group_id).select_related('user')
+
+# List all the materials of the group
+class GroupMaterialListAPIView(generics.ListAPIView):
+    serializer_class = GroupDetailSerializer
+    permission_classes = (IsAuthenticated, IsJoin)
+
+    def get_queryset(self):
+        group_id = self.kwargs['pk']
+        return GroupMaterial.objects.filter(group_id=group_id).select_related('user')
+
+# Create a new material for the group 
+class GroupMaterialCreateAPIView(generics.CreateAPIView):
+    queryset = GroupMaterial.objects.all()
+    serializer_class = GroupMaterialSerializer
+    permission_classes = (IsAuthenticated, IsJoin)
+
+    def perform_create(self, serializer):
+        group = Group.objects.get(pk=self.kwargs['pk'])
+        serializer.save(user=self.request.user, group=group)
+
+    def get_queryset(self):
+        group_id = self.kwargs['pk']
+        return GroupMaterial.objects.filter(group_id=group_id)    
+
+# Delete a material of the group
+class GroupMaterialDeleteAPIView(generics.DestroyAPIView):
+    queryset = GroupMaterial.objects.all()
+    serializer_class = GroupMaterialSerializer
+    permission_classes = (IsAuthenticated, IsJoin, IsMaterialOwner)
+    
+    def delete(self, request, *args, **kwargs):
+        material_id = kwargs.get('M_pk')
+        try:
+            material = GroupMaterial.objects.get(pk=material_id)
+            material.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except GroupMaterial.DoesNotExist:
+            return Response({"error": "Material does not exist."}, status=status.HTTP_404_NOT_FOUND)

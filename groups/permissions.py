@@ -1,6 +1,6 @@
 from rest_framework.permissions import BasePermission
 from rest_framework.exceptions import PermissionDenied
-from .models import UserGroup
+from .models import UserGroup, GroupMaterial
 
 class IsOwner(BasePermission):
     """
@@ -107,3 +107,24 @@ class IsUnJoin (BasePermission):
                 return True  
         except UserGroup.DoesNotExist:
             raise PermissionDenied(detail="You are already member of this group")
+        
+class IsMaterialOwner(BasePermission):
+    """
+    Custom permission to check if the user is the owner of the material.
+    """
+
+    def has_permission(self, request, view):
+        material_id = view.kwargs.get('M_pk')
+        if not material_id:
+            raise PermissionDenied(detail="Material ID is missing")
+
+        try:
+            material = GroupMaterial.objects.get(pk=material_id)
+            if material.user == request.user:
+                return True
+            elif UserGroup.objects.filter(user=request.user, group=material.group, is_admin=True).exists():
+                return True
+            else:
+                raise PermissionDenied(detail="You are not the Uploader of this material")
+        except GroupMaterial.DoesNotExist:
+            raise PermissionDenied(detail="This material is Deleted or You are not the Uploader of this material")
