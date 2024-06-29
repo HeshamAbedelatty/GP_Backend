@@ -26,8 +26,8 @@ SECRET_KEY = "django-insecure-*l%1ca&ln(sl4s#&a1w@tm*8xfg#x35of!=bhjic649mx_r&qq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.0.2.2', 'localhost', '127.0.0.1']
 
 # Application definition
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'schedule',
     'folders',
     'groups',
+    'PostsAndComments',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

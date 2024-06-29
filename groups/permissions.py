@@ -125,6 +125,6 @@ class IsMaterialOwner(BasePermission):
             elif UserGroup.objects.filter(user=request.user, group=material.group, is_admin=True).exists():
                 return True
             else:
-                raise PermissionDenied(detail="You are not the Uploader of this material")
+                raise PermissionDenied(detail="You are not the Uploader of this material or admin of the group")
         except GroupMaterial.DoesNotExist:
-            raise PermissionDenied(detail="This material is Deleted or You are not the Uploader of this material")
+            raise PermissionDenied(detail="This material is Deleted or You are not the Uploader of this material or admin of the group")

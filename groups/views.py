@@ -52,11 +52,7 @@ class GroupBatchUpdateAPIView(generics.RetrieveUpdateAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    
-# def user_is_owner(self, user, group):
-#         return UserGroup.objects.filter(user=user, group=group, is_owner=True).exists()
-        
+            
 
 class GroupJoinAPIView(generics.GenericAPIView):
     queryset = Group.objects.all()
@@ -162,3 +158,9 @@ class GroupMaterialDeleteAPIView(generics.DestroyAPIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except GroupMaterial.DoesNotExist:
             return Response({"error": "Material does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        
+#/////////////////////////////Posts & Comments EndPoints////////////////////////////////
+
+# from app1.serializers import Model1Serializer
+# from app1.models import Model1
+# from ToDoList.permissions import IsOwnerOrReadOnly
