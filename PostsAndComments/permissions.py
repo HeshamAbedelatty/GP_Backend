@@ -53,3 +53,23 @@ class IsReplyOwner(BasePermission):
             return True
         except Reply.DoesNotExist:
             raise PermissionDenied(detail="You are not the owner of this reply")
+        
+class IsPostInGroup(BasePermission):
+    """
+    Custom permission to check if the post is in the group.
+    """
+
+    def has_permission(self, request, view):
+        post_id = view.kwargs.get('P_pk')
+        group_id = view.kwargs.get('pk')
+        if not post_id:
+            raise PermissionDenied(detail="Post ID is missing")
+
+        try:
+            post = Post.objects.get(id=post_id)
+            if post.group.id == group_id:
+                return True
+            else:
+                raise PermissionDenied(detail="Post is not in this group")
+        except Post.DoesNotExist:
+            raise PermissionDenied(detail="you are not a member of this group")

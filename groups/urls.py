@@ -16,6 +16,7 @@ from PostsAndComments.views import (
     ReplyListCreateAPIView,
     ReplyRetrieveUpdateDestroyAPIView,
     CommentReplyListCreateAPIView,
+    PostListView, LikePostAPIView, UnLikePostAPIView
 )
 
 urlpatterns = [
@@ -38,7 +39,10 @@ urlpatterns = [
     
     path('<int:pk>/posts/', PostListCreateAPIView.as_view(), name='post-list-create'),
     path('<int:pk>/posts/<int:P_pk>/', PostRetrieveUpdateDestroyAPIView.as_view(), name='post-detail'),
-
+    path('<int:pk>/list_posts/', PostListView.as_view(), name='post-liked-list'),
+    path('<int:pk>/posts/<int:P_pk>/like/', LikePostAPIView.as_view(), name='like-post'),
+    path('<int:pk>/posts/<int:P_pk>/unlike/', UnLikePostAPIView.as_view(), name='unlike-post'),
+    
     path('<int:pk>/posts/<int:P_pk>/comments/', CommentListCreateAPIView.as_view(), name='comment-list-create'),
     path('<int:pk>/posts/<int:P_pk>/comments_replies/', CommentReplyListCreateAPIView.as_view(), name='comment-reply-list-create' ),
     path('<int:pk>/posts/<int:P_pk>/comments/<int:C_pk>/', CommentRetrieveUpdateDestroyAPIView.as_view(), name='comment-detail'),
