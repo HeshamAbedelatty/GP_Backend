@@ -19,7 +19,8 @@ class Schedule(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     description = models.TextField(blank=True)
-    reminder_time = models.DateTimeField(null=True, blank=True)
+    # reminder_time = models.DateTimeField(null=True, blank=True)
+    reminder_time = models.IntegerField(default=0)
     color = models.CharField(max_length=50, null=True, blank=True, default='#007bff')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedules')
 
