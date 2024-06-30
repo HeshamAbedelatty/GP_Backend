@@ -3,11 +3,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from groups.permissions import IsAdmin, IsNotAdmin, IsJoin, IsNotOwner, IsOwner, IsUnJoin, IsMaterialOwner
 from .models import Group, UserGroup, GroupMaterial
-from .serializers import GroupSerializer, UserGroupSerializer, GroupMaterialSerializer, GroupDetailSerializer
+from .serializers import (GroupSerializer, UserGroupSerializer, GroupMaterialSerializer, 
+                          GroupDetailSerializer, UserJoinSerializer)
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
-
+# ///////////////////////////////List All Groups EndPoints////////////////////////////////////////
 class GroupListCreateAPIView(generics.ListCreateAPIView):
     queryset = Group.objects.all().order_by('-members')
     serializer_class = GroupSerializer
@@ -16,8 +17,16 @@ class GroupListCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         group = serializer.save()
         UserGroup.objects.create(user=self.request.user, group=group, is_admin=True, is_owner=True)
-        
-        
+
+# ///////////////////////////////List Groups that i join EndPoints////////////////////////////////////////
+class UserJoinedGroupsListView(generics.ListAPIView):
+    serializer_class = UserJoinSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        return UserGroup.objects.filter(user_id= self.request.user ).select_related('group')
+
+# /////////////////////////////////Group Detail EndPoints////////////////////////////////////////
 class GroupDetailAPIView(generics.RetrieveAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
@@ -103,6 +112,7 @@ class GroupUnjoinAPIView(generics.GenericAPIView):
         
         return Response({"message": "Unjoined group successfully."}, status=status.HTTP_200_OK)
 
+# ///////////////////////////////Search by Group Title////////////////////////////////////////
 class GroupSearchByTitleAPIView(generics.ListAPIView):
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated,)
@@ -113,6 +123,7 @@ class GroupSearchByTitleAPIView(generics.ListAPIView):
             return Group.objects.filter(title__icontains=title)
         # return Group.objects.all()
 
+# ///////////////////////////////Group Users List////////////////////////////////////////
 class GroupUsersListAPIView(generics.ListAPIView):
     serializer_class = UserGroupSerializer
     permission_classes = (IsAuthenticated, IsJoin)
@@ -120,8 +131,19 @@ class GroupUsersListAPIView(generics.ListAPIView):
     def get_queryset(self):
         group_id = self.kwargs['pk']
         return UserGroup.objects.filter(group_id=group_id).select_related('user')
+    
+# ///////////////////////////////Search Matrial by Title////////////////////////////////////////
+class SearchMaterialByTitleAPIView(generics.ListAPIView):
+    serializer_class = GroupDetailSerializer
+    permission_classes = (IsAuthenticated, IsJoin)
 
-# List all the materials of the group
+    def get_queryset(self):
+        title = self.request.data.get('title', None)
+        if title:
+            return GroupMaterial.objects.filter(title__icontains=title)
+        # return Group.objects.all()
+
+# ///////////////////////////////Group Material List////////////////////////////////////////
 class GroupMaterialListAPIView(generics.ListAPIView):
     serializer_class = GroupDetailSerializer
     permission_classes = (IsAuthenticated, IsJoin)

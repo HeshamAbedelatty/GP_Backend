@@ -30,3 +30,11 @@ class GroupDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupMaterial
         fields = ['id', 'user', 'title', 'media_path','uploaded_Time']
+        
+# //////////////////////////////////////////////////////////////////////////////////////////
+class UserJoinSerializer(serializers.ModelSerializer):
+    group = GroupSerializer()  # Nested serializer for User
+
+    class Meta:
+        model = UserGroup
+        fields = ['group', 'is_owner', 'is_admin']

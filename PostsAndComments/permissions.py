@@ -9,7 +9,7 @@ class IsPostOwner(BasePermission):
     """
 
     def has_permission(self, request, view):
-        post_id = view.kwargs.get('pk')
+        post_id = view.kwargs.get('P_pk')
         if not post_id:
             raise PermissionDenied(detail="Post ID is missing")
 

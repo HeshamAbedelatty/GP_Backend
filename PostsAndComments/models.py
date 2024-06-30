@@ -14,6 +14,17 @@ class Post(models.Model):
     def __str__(self):
         return f"Post by {self.user.username} in {self.group.title}"
 
+# //////////////////////////////// PostLike Model ////////////////////////////////
+class PostLike(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} liked post {self.post.id}"
+    class Meta:
+        unique_together = ('post', 'user')
+
 class Comment(models.Model):
     description = models.TextField(max_length=1000)
     image = models.ImageField(upload_to='comments/images/', null=True, blank=True)

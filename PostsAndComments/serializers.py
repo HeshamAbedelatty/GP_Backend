@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'image']
 
 class PostSerializer(serializers.ModelSerializer):
-    user = UserSerializer() 
+    user = serializers.ReadOnlyField(source='user.username')
     group = serializers.ReadOnlyField(source='group.title')
     
     class Meta:
@@ -39,3 +39,12 @@ class CommentReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'description', 'image', 'created_at', 'likes', 'user', 'group', 'post', 'replies']
+
+# //////////////////////////////// PostLike Serializer ////////////////////////////////
+# class PostSerializer(serializers.ModelSerializer):
+#     user = UserSerializer() 
+#     group = serializers.ReadOnlyField(source='group.title')
+    
+#     class Meta:
+#         model = Post
+#         fields = ['id', 'description', 'image', 'created_at', 'likes', 'user', 'group']
