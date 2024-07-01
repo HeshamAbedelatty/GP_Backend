@@ -38,3 +38,17 @@ class UserJoinSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserGroup
         fields = ['group', 'is_owner', 'is_admin']
+
+# ///////////////////////////List all groups with has joined or not///////////////////////////////////////
+class GroupListSerializer(serializers.ModelSerializer):
+    has_joined = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Group
+        fields = ['id', 'title', 'description', 'type', 'image', 'password', 'subject', 'members', 'has_joined']
+
+    def get_has_joined(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return UserGroup.objects.filter(user=request.user, group=obj).exists()
+        return False

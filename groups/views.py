@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from groups.permissions import IsAdmin, IsNotAdmin, IsJoin, IsNotOwner, IsOwner, IsUnJoin, IsMaterialOwner
 from .models import Group, UserGroup, GroupMaterial
 from .serializers import (GroupSerializer, UserGroupSerializer, GroupMaterialSerializer, 
-                          GroupDetailSerializer, UserJoinSerializer)
+                          GroupDetailSerializer, UserJoinSerializer, GroupListSerializer)
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -18,6 +18,17 @@ class GroupListCreateAPIView(generics.ListCreateAPIView):
         group = serializer.save()
         UserGroup.objects.create(user=self.request.user, group=group, is_admin=True, is_owner=True)
 
+# ///////////////////////////////List All Groups EndPoints and is joined or not////////////////////////////////////////
+class GroupListAPIView(generics.ListAPIView):
+    queryset = Group.objects.all().order_by('-members')
+    serializer_class = GroupListSerializer
+    permission_classes = (IsAuthenticated,)
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+    
 # ///////////////////////////////List Groups that i join EndPoints////////////////////////////////////////
 class UserJoinedGroupsListView(generics.ListAPIView):
     serializer_class = UserJoinSerializer

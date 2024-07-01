@@ -5,7 +5,7 @@ from .views import (
     GroupSearchByTitleAPIView, GroupJoinAPIView, GroupDeleteAPIView, GroupUsersListAPIView,
     GroupUnjoinAPIView, GroupListCreateAPIView, GroupDetailAPIView, GroupBatchUpdateAPIView,
     GroupMaterialCreateAPIView, GroupMaterialListAPIView, GroupMaterialDeleteAPIView,
-    UserJoinedGroupsListView,
+    UserJoinedGroupsListView,GroupListAPIView
 )
 
 from PostsAndComments.views import (
@@ -25,6 +25,7 @@ urlpatterns = [
     path('patch_update/<int:pk>/', GroupBatchUpdateAPIView.as_view(), name='group-batch-update'),
     path('delete_patch/<int:pk>/', GroupDeleteAPIView.as_view(), name='group-delete'),
     path('user_joined_groups/', UserJoinedGroupsListView.as_view(), name='user-joined-groups'),
+    path('list_groups/', GroupListAPIView.as_view(), name='group-list'),
     
     path('<int:pk>/join/', GroupJoinAPIView.as_view(), name='group-join'),
     path('<int:pk>/unjoin/', GroupUnjoinAPIView.as_view(), name='group-unjoin'),
