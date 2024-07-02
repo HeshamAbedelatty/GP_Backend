@@ -30,13 +30,13 @@ urlpatterns = [
     path('<int:pk>/join/', GroupJoinAPIView.as_view(), name='group-join'),
     path('<int:pk>/unjoin/', GroupUnjoinAPIView.as_view(), name='group-unjoin'),
     
-    path('search/', GroupSearchByTitleAPIView.as_view(), name='group-search'),
+    path('search/<str:title>/', GroupSearchByTitleAPIView.as_view(), name='group-search'),
     path('<int:pk>/users/', GroupUsersListAPIView.as_view(), name='group-users-list'),
     
     path('<int:pk>/materials/upload/', GroupMaterialCreateAPIView.as_view(), name='group-material-list-create'),
     path('<int:pk>/materials/', GroupMaterialListAPIView.as_view(), name='group-material-list'),
     path('<int:pk>/materials/delete/<int:M_pk>/', GroupMaterialDeleteAPIView.as_view(), name='group-material-delete'),
-    path('<int:pk>/materials/search/', SearchMaterialByTitleAPIView.as_view(), name='material-search'),
+    path('<int:pk>/materials/search/<str:title>/', SearchMaterialByTitleAPIView.as_view(), name='material-search'),
     
     path('<int:pk>/posts/', PostListCreateAPIView.as_view(), name='post-list-create'),
     path('<int:pk>/posts/<int:P_pk>/', PostRetrieveUpdateDestroyAPIView.as_view(), name='post-detail'),

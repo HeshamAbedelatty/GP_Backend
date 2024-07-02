@@ -130,7 +130,7 @@ class GroupSearchByTitleAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        title = self.request.data.get('title', None)
+        title = self.kwargs.get('title', None)
         if title:
             return Group.objects.filter(title__icontains=title).order_by('-members')
         # return Group.objects.all()
@@ -155,7 +155,7 @@ class SearchMaterialByTitleAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         group_id = self.kwargs['pk']
-        title = self.request.data.get('title', None)
+        title = self.kwargs.get('title', None)
         if title:
             return GroupMaterial.objects.filter(title__icontains=title, group_id=group_id)
         # return Group.objects.all()
