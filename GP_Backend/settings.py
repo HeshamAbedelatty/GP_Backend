@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'schedule',
     'folders',
     'groups',
+    'forgetPassword',
+    'django.core.mail',
     'PostsAndComments',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -53,7 +55,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    # "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -64,7 +66,7 @@ ROOT_URLCONF = "GP_Backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -165,3 +167,13 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = "users.CustomUser"
+# Email settings (configure these as per your email service provider)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mohamed9999ah@gmail.com'
+EMAIL_HOST_PASSWORD = 'mdhmvhapwmpiaued'
+
+# CSRF_COOKIE_SECURE = False
+# CSRF_USE_SESSIONS = False
