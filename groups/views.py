@@ -124,15 +124,20 @@ class GroupUnjoinAPIView(generics.GenericAPIView):
         return Response({"message": "Unjoined group successfully."}, status=status.HTTP_200_OK)
 
 # ///////////////////////////////Search by Group Title////////////////////////////////////////
+# change group serilaizer by GroupListSerializer 
 class GroupSearchByTitleAPIView(generics.ListAPIView):
-    serializer_class = GroupSerializer
+    serializer_class = GroupListSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         title = self.request.data.get('title', None)
         if title:
-            return Group.objects.filter(title__icontains=title)
+            return Group.objects.filter(title__icontains=title).order_by('-members')
         # return Group.objects.all()
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 # ///////////////////////////////Group Users List////////////////////////////////////////
 class GroupUsersListAPIView(generics.ListAPIView):
@@ -149,9 +154,10 @@ class SearchMaterialByTitleAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticated, IsJoin)
 
     def get_queryset(self):
+        group_id = self.kwargs['pk']
         title = self.request.data.get('title', None)
         if title:
-            return GroupMaterial.objects.filter(title__icontains=title)
+            return GroupMaterial.objects.filter(title__icontains=title, group_id=group_id)
         # return Group.objects.all()
 
 # ///////////////////////////////Group Material List////////////////////////////////////////
