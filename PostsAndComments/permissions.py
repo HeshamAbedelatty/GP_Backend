@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission
 from rest_framework.exceptions import PermissionDenied
+from forgetPassword.views import logger
 from .models import Post, Comment, Reply
 from groups.models import UserGroup
 
@@ -10,12 +11,19 @@ class IsPostOwner(BasePermission):
 
     def has_permission(self, request, view):
         post_id = view.kwargs.get('P_pk')
+        group_id = view.kwargs.get('pk')
         if not post_id:
             raise PermissionDenied(detail="Post ID is missing")
 
         try:
             post = Post.objects.get(user=request.user, id=post_id)
-            return True
+            logger.info(f"Post: {post}")
+            if post.user == request.user:
+                return True
+            elif UserGroup.objects.filter(user=request.user, group=post.group, is_admin=True).exists():
+                return True
+            else:
+                raise PermissionDenied(detail="You are not the owner of this post or admin of the group")
         except Post.DoesNotExist:
             raise PermissionDenied(detail="You are not the owner of this post")
 
