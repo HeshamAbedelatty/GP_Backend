@@ -9,7 +9,7 @@ from PostsAndComments.permissions import (
     IsCommentOwner, IsPostOwner, IsReplyOwner, IsPostInGroup)
 from .models import Comment, Post, PostLike, Reply, CommentLike, ReplyLike
 from .serializers import (PostSerializer, CommentSerializer, ReplySerializer, ReplyEditSerializer,
-                          CommentReplySerializer, PostListSerializer, PostEditSerializer)
+                          CommentReplySerializer, PostListSerializer, CommentEditSerializer)
 
 # ////////////////////////////Create Post////////////////////////////////////////
 class PostListCreateAPIView(generics.ListCreateAPIView):
@@ -42,6 +42,7 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = PostListSerializer
     permission_classes = (IsAuthenticated,IsJoin, IsPostOwner,)
     
+    
     def retrieve(self, request, *args, **kwargs):
         post_id = kwargs.get('P_pk')
         group_id = kwargs.get('pk')
@@ -51,7 +52,8 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
             post = Post.objects.get(id=post_id)
             if post.group.id != group_id:
                 raise PermissionDenied(detail="Post does not belong to this group")
-            return Response(PostListSerializer(post).data)
+            serializer = PostListSerializer(post, context={'request': request})
+            return Response(serializer.data)
         except Post.DoesNotExist:
             raise PermissionDenied(detail="Post does not exist")
     
@@ -64,7 +66,7 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
             post = Post.objects.get(id=post_id)
             if post.group.id != group_id:
                 raise PermissionDenied(detail="Post does not belong to this group")
-            serializer = PostListSerializer(post, data=request.data, partial=True)
+            serializer = PostListSerializer(post, data=request.data, partial=True, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -169,9 +171,9 @@ class CommentAndReplyListAPIView(generics.ListAPIView):
 # ////////////////////////////Edit in Comment////////////////////////////////////////
 class CommentRetrieveUpdateDestroyAPIView(generics.DestroyAPIView, generics.UpdateAPIView):
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    serializer_class = CommentEditSerializer
     permission_classes = (IsAuthenticated,IsJoin, IsCommentOwner,)
-    
+        
     def retrieve(self, request, *args, **kwargs):
         comment_id = kwargs.get('C_pk')
         post_id = kwargs.get('P_pk')
@@ -181,7 +183,8 @@ class CommentRetrieveUpdateDestroyAPIView(generics.DestroyAPIView, generics.Upda
             comment = Comment.objects.get(id=comment_id)
             if comment.post.id != post_id:
                 raise PermissionDenied(detail="Comment does not belong to this post")
-            return Response(CommentSerializer(comment).data)
+            serializer = CommentEditSerializer(comment, context={'request': request})
+            return Response(serializer.data)
         except Comment.DoesNotExist:
             raise PermissionDenied(detail="Comment does not exist")
     
@@ -194,7 +197,7 @@ class CommentRetrieveUpdateDestroyAPIView(generics.DestroyAPIView, generics.Upda
             comment = Comment.objects.get(id=comment_id)
             if comment.post.id != post_id:
                 raise PermissionDenied(detail="Comment does not belong to this post")
-            serializer = CommentSerializer(comment, data=request.data, partial=True)
+            serializer = CommentEditSerializer(comment, data=request.data, partial=True, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -284,7 +287,7 @@ class ReplyListCreateAPIView(generics.ListCreateAPIView):
 # ////////////////////////////Edit Reply////////////////////////////////////////
 class ReplyRetrieveUpdateDestroyAPIView(generics.DestroyAPIView, generics.UpdateAPIView):
     queryset = Reply.objects.all()
-    serializer_class = ReplyEditSerializer
+    serializer_class = ReplySerializer
     permission_classes = (IsAuthenticated,IsJoin, IsReplyOwner,)
     
     def retrieve(self, request, *args, **kwargs):
@@ -297,7 +300,8 @@ class ReplyRetrieveUpdateDestroyAPIView(generics.DestroyAPIView, generics.Update
             reply = Reply.objects.get(id=reply_id)
             if reply.comment.id != comment_id:
                 raise PermissionDenied(detail="Reply does not belong to this comment")
-            return Response(ReplyEditSerializer(reply).data)
+            serializer = ReplySerializer(reply, context={'request': request})
+            return Response(serializer.data)
         except Reply.DoesNotExist:
             raise PermissionDenied(detail="Reply does not exist")
     
@@ -311,7 +315,7 @@ class ReplyRetrieveUpdateDestroyAPIView(generics.DestroyAPIView, generics.Update
             reply = Reply.objects.get(id=reply_id)
             if reply.comment.id != comment_id:
                 raise PermissionDenied(detail="Reply does not belong to this comment")
-            serializer = ReplyEditSerializer(reply, data=request.data, partial=True)
+            serializer = ReplySerializer(reply, data=request.data, partial=True, context={'request': request})
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)

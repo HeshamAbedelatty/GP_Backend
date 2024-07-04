@@ -31,16 +31,16 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'description', 'image', 'created_at', 'likes', 'user_has_liked', 'group', 'user']
-
+    
     def get_user_has_liked(self, obj):
         request = self.context.get('request')
         if request and request.user.is_authenticated:
-            return PostLike.objects.filter(user=request.user, post=obj).exists()
+            return PostLike.objects.filter(user=request.user, post=obj.id).exists()
         return False
 
 # //////////////////////////////// Reply Serializer ////////////////////////////////
 class ReplySerializer(serializers.ModelSerializer):
-    user = UserSerializer() 
+    user = UserSerializer(read_only=True) 
     group = serializers.ReadOnlyField(source='group.title')
     comment = serializers.ReadOnlyField(source='comment.id')
     user_has_liked = serializers.SerializerMethodField()
@@ -75,6 +75,21 @@ class CommentReplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'description', 'image', 'created_at', 'likes', 'user', 'group', 'post', 'user_has_liked', 'replies']
+
+class CommentEditSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True) 
+    group = serializers.ReadOnlyField(source='group.title')
+    user_has_liked = serializers.SerializerMethodField()
+    
+    def get_user_has_liked(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return CommentLike.objects.filter(user=request.user, comment=obj).exists()
+        return False
+    
+    class Meta:
+        model = Reply
+        fields = ['id', 'description', 'image', 'created_at', 'likes', 'user', 'group', 'user_has_liked']
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
