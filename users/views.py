@@ -5,6 +5,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import CustomUser
 from .serializers import RegisterSerializer, UserSerializer, LogoutSerializer
 from django.contrib.auth import authenticate
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import logging
+
+logger = logging.getLogger(__name__)
 
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
@@ -16,7 +22,31 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         user_data = UserSerializer(user).data
-        return Response(user_data)
+        try:
+            email_user = 'mohamed9999ah@gmail.com'
+            email_password = 'mdhmvhapwmpiaued'
+            email_send = user.email
+
+            subject = 'Reset Passwrod Email'
+
+            msg = MIMEMultipart()
+            msg['From'] = email_user
+            msg['To'] = email_send
+            msg['Subject'] = subject
+            # send data by html file to email
+            body = f"Hello {user.username},\n\nWelcome to our platform. Your account has been created successfully.\n\nBest regards,\nSa3teenGd Team"
+            msg.attach(MIMEText(body, 'plain'))
+
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(email_user, email_password)
+            text = msg.as_string()
+            server.sendmail(email_user, email_send, text)
+            server.quit()
+            return Response(user_data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(e)
+            return Response({'error': 'Something went wrong'}, status=status.HTTP_400_BAD_REQUEST)
 
 class LoginView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
