@@ -25,7 +25,7 @@ class PostEditSerializer(serializers.ModelSerializer):
 # ///////////////////Post List Serializer that its Liked or not////////////////////////
 class PostListSerializer(serializers.ModelSerializer):
     user_has_liked = serializers.SerializerMethodField()
-    user = UserSerializer()
+    user = UserSerializer(read_only=True)
     group = serializers.ReadOnlyField(source='group.title')
 
     class Meta:

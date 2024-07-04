@@ -39,7 +39,7 @@ class PostListView(generics.ListAPIView):
 # ////////////////////////////Edit Post////////////////////////////////////////
 class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
-    serializer_class = PostEditSerializer
+    serializer_class = PostListSerializer
     permission_classes = (IsAuthenticated,IsJoin, IsPostOwner,)
     
     def retrieve(self, request, *args, **kwargs):
@@ -51,7 +51,7 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
             post = Post.objects.get(id=post_id)
             if post.group.id != group_id:
                 raise PermissionDenied(detail="Post does not belong to this group")
-            return Response(PostEditSerializer(post).data)
+            return Response(PostListSerializer(post).data)
         except Post.DoesNotExist:
             raise PermissionDenied(detail="Post does not exist")
     
@@ -64,7 +64,7 @@ class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
             post = Post.objects.get(id=post_id)
             if post.group.id != group_id:
                 raise PermissionDenied(detail="Post does not belong to this group")
-            serializer = PostEditSerializer(post, data=request.data, partial=True)
+            serializer = PostListSerializer(post, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
