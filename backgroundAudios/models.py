@@ -15,26 +15,3 @@ class AudioFile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} ==> {self.file_name}"
-
-# class FavoriteAudio(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     audio_file = models.ForeignKey(AudioFile, on_delete=models.CASCADE)
-
-#     def __str__(self):
-#         return f"Favorite {self.audio_file.file_name} by {self.user.username}"
-
-# class Playback(models.Model):
-#     PLAYBACK_STATES = [
-#         ('playing', 'Playing'),
-#         ('paused', 'Paused'),
-#         ('stopped', 'Stopped'),
-#     ]
-#     id = models.AutoField(primary_key=True)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     audio_file = models.ForeignKey(AudioFile, on_delete=models.CASCADE)
-#     current_position = models.DurationField()
-#     state = models.CharField(max_length=10, choices=PLAYBACK_STATES)
-
-#     def __str__(self):
-#         return f"Playback of {self.audio_file.file_name} by {self.user.username}"
