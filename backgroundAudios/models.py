@@ -14,7 +14,7 @@ class AudioFile(models.Model):
     is_favorite = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.file_name
+        return f"{self.user.username} ==> {self.file_name}"
 
 # class FavoriteAudio(models.Model):
 #     id = models.AutoField(primary_key=True)

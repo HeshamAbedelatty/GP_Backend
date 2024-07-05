@@ -80,6 +80,7 @@ class CommentEditSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True) 
     group = serializers.ReadOnlyField(source='group.title')
     user_has_liked = serializers.SerializerMethodField()
+    post = serializers.ReadOnlyField(source='post.id')
     
     def get_user_has_liked(self, obj):
         request = self.context.get('request')
@@ -88,8 +89,8 @@ class CommentEditSerializer(serializers.ModelSerializer):
         return False
     
     class Meta:
-        model = Reply
-        fields = ['id', 'description', 'image', 'created_at', 'likes', 'user', 'group', 'user_has_liked']
+        model = Comment
+        fields = ['id', 'description', 'image', 'created_at', 'likes', 'user', 'group', 'post','user_has_liked']
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
