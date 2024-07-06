@@ -29,11 +29,6 @@ DEBUG = True
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['sa3teengd.azurewebsites.net', '10.0.2.2', 'localhost', '127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://sa3teengd.azurewebsites.net',
-]
-# Application definition
-
 INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
