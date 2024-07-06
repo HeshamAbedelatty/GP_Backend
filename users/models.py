@@ -11,3 +11,24 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+    def calculate_total_likes(self):
+        from PostsAndComments.models import Comment, Reply
+        comment_likes = Comment.objects.filter(user=self).aggregate(total_likes=models.Sum('likes'))['total_likes'] or 0
+        reply_likes = Reply.objects.filter(user=self).aggregate(total_likes=models.Sum('likes'))['total_likes'] or 0
+        return comment_likes + reply_likes
+
+    
+    def scale_rate(self, likes, max_rate=5, max_likes=50):
+        rate = (likes / max_likes) * max_rate
+        return min(rate, max_rate)
+    
+    def get_rating(self):
+        oldRate = self.rate
+        likes = self.calculate_total_likes()
+        newRate = self.scale_rate(likes)
+        if oldRate < newRate:
+            self.rate = newRate
+            self.save()
+            return newRate
+        return oldRate

@@ -15,8 +15,10 @@ from PostsAndComments.views import (
     CommentRetrieveUpdateDestroyAPIView,
     ReplyListCreateAPIView,
     ReplyRetrieveUpdateDestroyAPIView,
-    CommentReplyListCreateAPIView,
-    PostListView, LikePostAPIView, UnLikePostAPIView
+    CommentAndReplyListAPIView,
+    PostListView, LikePostAPIView, UnLikePostAPIView,
+    LikeCommentAPIView, UnLikeCommentAPIView,
+    UnLikeReplyAPIView, LikeReplyAPIView
 )
 
 urlpatterns = [
@@ -45,10 +47,13 @@ urlpatterns = [
     path('<int:pk>/posts/<int:P_pk>/unlike/', UnLikePostAPIView.as_view(), name='unlike-post'),
     
     path('<int:pk>/posts/<int:P_pk>/comments/', CommentListCreateAPIView.as_view(), name='comment-list-create'),
-    path('<int:pk>/posts/<int:P_pk>/comments_replies/', CommentReplyListCreateAPIView.as_view(), name='comment-reply-list-create' ),
+    path('<int:pk>/posts/<int:P_pk>/comments_replies/', CommentAndReplyListAPIView.as_view(), name='comment-reply-list-create' ),
     path('<int:pk>/posts/<int:P_pk>/comments/<int:C_pk>/', CommentRetrieveUpdateDestroyAPIView.as_view(), name='comment-detail'),
-
+    path('<int:pk>/comments/<int:C_pk>/like/', LikeCommentAPIView.as_view(), name='like-comment'),
+    path('<int:pk>/comments/<int:C_pk>/unlike/', UnLikeCommentAPIView.as_view(), name='unlike-comment'),
+    
     path('<int:pk>/posts/<int:P_pk>/comments/<int:C_pk>/replies/', ReplyListCreateAPIView.as_view(), name='reply-list-create'),
     path('<int:pk>/posts/<int:P_pk>/comments/<int:C_pk>/replies/<int:R_pk>/', ReplyRetrieveUpdateDestroyAPIView.as_view(), name='reply-detail'),
-
+    path('<int:pk>/replies/<int:R_pk>/like/', LikeReplyAPIView.as_view(), name='like-reply'),
+    path('<int:pk>/replies/<int:R_pk>/unlike/', UnLikeReplyAPIView.as_view(), name='unlike-reply'),
 ]

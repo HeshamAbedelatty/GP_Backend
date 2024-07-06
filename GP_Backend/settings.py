@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'schedule',
     'folders',
     'groups',
+    'backgroundAudios',
+    'recommendationsystem',
     'forgetPassword',
     'django.core.mail',
     'PostsAndComments',

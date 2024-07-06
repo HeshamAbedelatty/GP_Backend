@@ -22,9 +22,11 @@ class PostLike(models.Model):
 
     def __str__(self):
         return f"{self.user.username} liked post {self.post.id}"
+    
     class Meta:
         unique_together = ('post', 'user')
 
+# //////////////////////////////// Comment Model ////////////////////////////////
 class Comment(models.Model):
     description = models.TextField(max_length=1000)
     image = models.ImageField(upload_to='comments/images/', null=True, blank=True)
@@ -37,6 +39,19 @@ class Comment(models.Model):
     def __str__(self):
         return f"Comment by {self.user.username} on post {self.post.id} in {self.group.title}"
 
+# //////////////////////////////// CommentLike Model ////////////////////////////////
+class CommentLike(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='comment_likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} liked comment {self.comment.id}"
+    
+    class Meta:
+        unique_together = ('comment', 'user')
+
+# //////////////////////////////// Reply Model ////////////////////////////////
 class Reply(models.Model):
     description = models.TextField(max_length=1000)
     image = models.ImageField(upload_to='replies/images/', null=True, blank=True)
@@ -48,3 +63,15 @@ class Reply(models.Model):
 
     def __str__(self):
         return f"Reply by {self.user.username} on comment {self.comment.id} in {self.group.title}"
+
+# //////////////////////////////// ReplyLike Model ////////////////////////////////
+class ReplyLike(models.Model):
+    reply = models.ForeignKey(Reply, on_delete=models.CASCADE, related_name='reply_likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} liked reply {self.reply.id}"
+    
+    class Meta:
+        unique_together = ('reply', 'user')

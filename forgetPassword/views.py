@@ -91,9 +91,9 @@ class PasswordResetView(APIView):
 
                 email_user = 'mohamed9999ah@gmail.com'
                 email_password = 'mdhmvhapwmpiaued'
-                email_send = 'modebeboo.20002@gmail.com'
+                email_send = email #'modebeboo.20002@gmail.com'
 
-                subject = 'Test Email'
+                subject = 'Reset Passwrod Email'
 
                 msg = MIMEMultipart()
                 msg['From'] = email_user

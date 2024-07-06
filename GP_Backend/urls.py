@@ -27,5 +27,7 @@ urlpatterns = [
     path('folders/', include('folders.urls')),
     path('groups/', include('groups.urls')),
     path('reset/', include('forgetPassword.urls')),
+    path('audio/', include('backgroundAudios.urls')),
+    path('recommend/', include('recommendationsystem.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
