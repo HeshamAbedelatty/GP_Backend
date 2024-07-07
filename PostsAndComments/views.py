@@ -25,7 +25,7 @@ class PostListCreateAPIView(generics.ListCreateAPIView):
 class PostListView(generics.ListAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
-    permission_classes = [IsAuthenticated, IsJoin]
+    permission_classes = [IsAuthenticated, ] #IsJoin
 
     def get_queryset(self):
         group_id = self.kwargs.get('pk')
@@ -157,7 +157,7 @@ class CommentListCreateAPIView(generics.ListCreateAPIView):
 class CommentAndReplyListAPIView(generics.ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentReplySerializer
-    permission_classes = (IsAuthenticated,IsJoin,)
+    permission_classes = (IsAuthenticated,) #IsJoin
     
     def get_queryset(self):
         post_id = self.kwargs.get('P_pk')
