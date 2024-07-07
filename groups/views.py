@@ -142,7 +142,7 @@ class GroupSearchByTitleAPIView(generics.ListAPIView):
 # ///////////////////////////////Group Users List////////////////////////////////////////
 class GroupUsersListAPIView(generics.ListAPIView):
     serializer_class = UserGroupSerializer
-    permission_classes = (IsAuthenticated, IsJoin)
+    permission_classes = (IsAuthenticated, ) #IsJoin
 
     def get_queryset(self):
         group_id = self.kwargs['pk']
@@ -151,7 +151,7 @@ class GroupUsersListAPIView(generics.ListAPIView):
 # ///////////////////////////////Search Matrial by Title////////////////////////////////////////
 class SearchMaterialByTitleAPIView(generics.ListAPIView):
     serializer_class = GroupDetailSerializer
-    permission_classes = (IsAuthenticated, IsJoin)
+    permission_classes = (IsAuthenticated, ) #IsJoin
 
     def get_queryset(self):
         group_id = self.kwargs['pk']
@@ -163,7 +163,7 @@ class SearchMaterialByTitleAPIView(generics.ListAPIView):
 # ///////////////////////////////Group Material List////////////////////////////////////////
 class GroupMaterialListAPIView(generics.ListAPIView):
     serializer_class = GroupDetailSerializer
-    permission_classes = (IsAuthenticated, IsJoin)
+    permission_classes = (IsAuthenticated, ) #IsJoin
 
     def get_queryset(self):
         group_id = self.kwargs['pk']
