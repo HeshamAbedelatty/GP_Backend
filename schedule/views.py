@@ -12,6 +12,9 @@ class ScheduleCreateAPIView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
 class ScheduleDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
