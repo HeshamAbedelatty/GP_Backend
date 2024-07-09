@@ -27,7 +27,7 @@ class RegisterView(generics.CreateAPIView):
             email_password = 'mdhmvhapwmpiaued'
             email_send = user.email
 
-            subject = 'Reset Passwrod Email'
+            subject = 'Welcome Email'
 
             msg = MIMEMultipart()
             msg['From'] = email_user
